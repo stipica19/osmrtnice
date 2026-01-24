@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+  
+}
+
+model Obituary {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  firstName String
+  lastName  String
+  djevojackoPrezime String?
+  spol      String?
+
+  birthDate DateTime?
+  deathDate DateTime?
+
+  slug        String   @unique
+  status      String   @default("draft")
+  publishedAt DateTime?
+
+  contentJson  Json
+  contentJson1 Json
+
+  image     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lastName])
+  @@index([status, publishedAt])
+}
+
+model Memory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  publishDate DateTime?
+  status      String   @default("draft")
+  publishedAt DateTime?
+  personInfo  String
+  dateRange   String?
+  content     String
+  authorName  String
+  imageUrl    String?
+  slug        String?  @unique
+  createdAt   DateTime @default(now())
+
+  @@index([publishDate])
+  @@index([status, publishedAt])
+}
