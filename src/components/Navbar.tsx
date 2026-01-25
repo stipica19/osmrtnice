@@ -40,7 +40,7 @@ export default function Navbar() {
         className="text-gray-600 text-base md:text-lg font-medium uppercase hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
         onClick={() => setOpen(false)}
       >
-        Predaj sjećanje
+        Admin
       </a>
     </nav>
   );

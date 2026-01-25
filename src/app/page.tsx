@@ -11,7 +11,6 @@ export default async function Home() {
     },
     take: 24,
   });
-  console.log("Nizz", obituaries);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
