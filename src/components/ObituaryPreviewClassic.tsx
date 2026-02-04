@@ -73,10 +73,10 @@ export function ObituaryPreviewClassic({
         : "(____.)";
 
   return (
-    <div className="bg-black rounded-xl p-10">
+    <div className="bg-black rounded-xl border-t-66 border-l-66 border-r-66 border-black preview-a4-landscape">
       {/* unutarnji frame */}
-      <div className="rounded-xl bg-white overflow-hidden">
-        <div className="grid grid-cols-[260px_1fr]">
+      <div className=" bg-white overflow-hidden">
+        <div className="grid grid-cols-[280px_1fr]">
           {/* LIJEVO: template slika */}
           <div className="bg-neutral-900">
             <img
@@ -87,17 +87,19 @@ export function ObituaryPreviewClassic({
           </div>
 
           {/* DESNO: sadržaj */}
-          <div className=" flex  p-8">
+          <div className=" flex p-1">
             {/* centrirani tekst */}
-            <div className="flex flex-col w-full items-center text-center justify-around font-serif px-6">
+            <div className="flex flex-col w-full items-center text-center justify-center font-serif px-6">
               {portrait?.secureUrl && (
                 <img
                   src={portrait.secureUrl}
                   alt="portret"
-                  className="h-50 w-40 object-cover border border-neutral-300"
+                  className="max-h-45 max-w-40  object-cover "
                 />
               )}
-              <p className="text-xl font-semibold leading-snug">
+              <p
+                className={`text-xl font-semibold leading-snug ${!portrait ? "mt-10" : "mt-1"}`}
+              >
                 Tužnim srcem javljamo rodbini i prijateljima
                 <br />
                 {aDate ? (
@@ -111,13 +113,17 @@ export function ObituaryPreviewClassic({
                 {spol == "Z" ? " preminula naša draga" : " preminuo naš dragi"}
               </p>
 
-              <h1 className="mt-6 text-6xl font-extrabold tracking-tight">
+              <h1
+                className={`mt-2  font-extrabold tracking-tight ${!portrait ? "mt-10 text-7xl " : "mt-1 text-6xl"}`}
+              >
                 {fullName}
               </h1>
 
               <p className="mt-2 text-2xl font-bold">{birthLine}</p>
 
-              <div className="mt-6 text-3xl font-extrabold leading-snug">
+              <div
+                className={`font-extrabold max-h-50 overflow-hidden ${!portrait ? "mt-10" : "mt-1"}`}
+              >
                 {contentJson?.type && (
                   <div
                     className="max-w-none mx-auto mt-2 text-center font-sans"
@@ -126,7 +132,9 @@ export function ObituaryPreviewClassic({
                 )}
               </div>
 
-              <div className="mt-8">
+              <div
+                className={`mt-1 max-h-50 overflow-hidden ${!portrait ? "mt-10" : "mt-1"}`}
+              >
                 <p className="text-3xl font-extrabold">OŽALOŠĆENI:</p>
                 {contentJson1?.type && (
                   <div
@@ -142,8 +150,8 @@ export function ObituaryPreviewClassic({
         </div>
 
         {/* donji footer na crnom (kao na slici) */}
-        <div className="bg-black text-white text-center py-4 font-serif text-2xl">
-          {footerText}
+        <div className="bg-black   text-white text-center py-2 font-serif text-xl">
+          <p className="translate-y-2">{footerText}</p>
         </div>
       </div>
     </div>

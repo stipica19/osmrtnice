@@ -1,13 +1,9 @@
-"use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { Button } from "@/components/ui/button";
 import { ObituaryPreviewClassic } from "./ObituaryPreviewClassic";
 
-type UploadedImage = {
-  secureUrl: string;
-};
+type UploadedImage = { secureUrl: string };
 
 export function PrintableObituaryClassic({
   templateLeftUrl = "/templates/cross.jpg",
@@ -45,7 +41,7 @@ export function PrintableObituaryClassic({
   footerText?: string;
 }) {
   const printRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
 
   const handlePrint = useReactToPrint({
@@ -54,32 +50,80 @@ export function PrintableObituaryClassic({
     preserveAfterPrint: true,
   });
 
-  // Auto-scale content to ensure it fits exactly one A4 landscape page
-  useEffect(() => {
+  const applyScale = () => {
     const pageEl = printRef.current;
-    const innerEl = contentRef.current;
+    const innerEl = innerRef.current;
     if (!pageEl || !innerEl) return;
 
-    // Reset scale to measure natural size
-    innerEl.style.transform = "";
-    innerEl.style.width = "";
+    // reset
+    innerEl.style.transform = "none";
+    innerEl.style.width = "auto";
+    innerEl.style.height = "auto";
 
-    const pageHeight = pageEl.getBoundingClientRect().height; // target height
-    const contentHeight = innerEl.scrollHeight; // natural content height
+    const pageW = pageEl.clientWidth;
+    const pageH = pageEl.clientHeight;
 
-    if (contentHeight === 0 || pageHeight === 0) {
+    // prirodna veličina sadržaja (bez skale)
+    const contentW = innerEl.scrollWidth;
+    const contentH = innerEl.scrollHeight;
+
+    if (!pageW || !pageH || !contentW || !contentH) {
       setScale(1);
       return;
     }
 
-    const nextScale = Math.min(1, pageHeight / contentHeight);
+    const nextScale = Math.min(1, pageW / contentW, pageH / contentH);
     setScale(nextScale);
 
-    // Apply transform via inline style
-    // width is expanded inversely so that scaled width equals container width
     innerEl.style.transformOrigin = "top left";
     innerEl.style.transform = `scale(${nextScale})`;
-    innerEl.style.width = nextScale < 1 ? `${(1 / nextScale) * 100}%` : "";
+
+    // proširi “virtualnu” širinu/visinu da nakon skale bude tačno kao container
+    if (nextScale < 1) {
+      innerEl.style.width = `${(1 / nextScale) * 100}%`;
+      innerEl.style.height = `${(1 / nextScale) * 100}%`;
+    }
+  };
+
+  // useLayoutEffect da ne “treperi” mjerenje + radi nakon layouta
+  useLayoutEffect(() => {
+    applyScale();
+
+    // opcionalno: reaguj kad se promijeni veličina (npr. fontovi, slike)
+    const ro = new ResizeObserver(() => applyScale());
+    if (printRef.current) ro.observe(printRef.current);
+    if (innerRef.current) ro.observe(innerRef.current);
+
+    // slušaj i promjene prozora (promjena širine pregleda)
+    const onResize = () => applyScale();
+    window.addEventListener("resize", onResize);
+
+    // promjene u DOM-u (unos teksta, ubacivanje slika)
+    const mo = new MutationObserver(() => applyScale());
+    if (innerRef.current) {
+      mo.observe(innerRef.current, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+    }
+
+    // ponovna skala kad se slike učitaju
+    const imgs: HTMLImageElement[] = Array.from(
+      innerRef.current?.querySelectorAll("img") ?? [],
+    );
+    imgs.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", applyScale, { once: true });
+      }
+    });
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", onResize);
+      mo.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     firstName,
     lastName,
@@ -94,37 +138,41 @@ export function PrintableObituaryClassic({
     contentJson,
     contentJson1,
     templateLeftUrl,
+    footerText,
+    portrait?.secureUrl,
+    announcementDate,
   ]);
 
   return (
     <div className="mx-auto print-container preview-a4-landscape">
-      {/* Kontrole koje se ne printaju */}
-
-      {/* Sadržaj koji se printa */}
       <div ref={printRef} className="preview-page">
-        <div ref={contentRef}>
-          <ObituaryPreviewClassic
-            templateLeftUrl={templateLeftUrl}
-            portrait={portrait}
-            announcementDate={announcementDate}
-            firstName={firstName}
-            lastName={lastName}
-            djevojackoPrezime={djevojackoPrezime}
-            spol={spol}
-            birthDate={birthDate}
-            deathDate={deathDate}
-            funeralDate={funeralDate}
-            funeralTime={funeralTime}
-            cemetery={cemetery}
-            familyText={familyText}
-            contentJson={contentJson}
-            contentJson1={contentJson1}
-            footerText={footerText}
-          />
-        </div>
+        <div ref={innerRef} className="h-full w-full">
+          <div className="h-full w-full">
+            <ObituaryPreviewClassic
+              templateLeftUrl={templateLeftUrl}
+              portrait={portrait}
+              announcementDate={announcementDate}
+              firstName={firstName}
+              lastName={lastName}
+              djevojackoPrezime={djevojackoPrezime}
+              spol={spol}
+              birthDate={birthDate}
+              deathDate={deathDate}
+              funeralDate={funeralDate}
+              funeralTime={funeralTime}
+              cemetery={cemetery}
+              familyText={familyText}
+              contentJson={contentJson}
+              contentJson1={contentJson1}
+              footerText={footerText}
+            />
+          </div>
+        </div>{" "}
       </div>
+
       <div className="no-print mt-4 flex items-center gap-2">
         <Button onClick={handlePrint}>Ispiši / PDF</Button>
+        <span className="text-sm opacity-70">scale: {scale.toFixed(3)}</span>
       </div>
     </div>
   );

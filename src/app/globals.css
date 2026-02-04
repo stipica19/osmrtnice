@@ -134,66 +134,90 @@
 
 /* Screen preview: responsive A4 landscape wrapper */
 .preview-a4-landscape {
-  width: 100%;
-  max-width: 297mm; /* cap to A4 width on screen */
-  margin: 0 auto; /* center on desktop */
+  min-width: 29.7cm;
+  min-height: 21cm;
+  max-width: 29.7cm;
+  max-height: 21cm;
 }
 
-/* Maintain A4 aspect ratio on screen while being responsive */
+/* Inner page surface used by Printable component */
 .preview-page {
-  width: 100%;
-  height: auto; /* let height flow from width */
-  aspect-ratio: 297 / 210; /* A4 landscape ratio */
-  overflow: hidden; /* clip content beyond one page */
+  min-width: 29.7cm;
+  min-height: 21cm;
+  max-width: 29.7cm;
+  max-height: 21cm;
+  overflow: hidden;
+  position: relative;
+  background: white;
 }
 
-/* Mobile: ensure full page fits viewport */
-@media (max-width: 640px) {
-  .preview-a4-landscape {
-    max-width: 300px; /* cap width on mobile */
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  .preview-page {
-    width: 100%;
-    height: auto; /* derive height from aspect ratio */
-    aspect-ratio: 297 / 210; /* A4 landscape */
-    overflow: hidden; /* allow the JS scaler to fit content */
-  }
+/* Prevent horizontal overflow inside the A4 surface */
+.preview-page *,
+.preview-page *::before,
+.preview-page *::after {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.preview-page p,
+.preview-page div,
+.preview-page span,
+.preview-page li,
+.preview-page h1,
+.preview-page h2,
+.preview-page h3,
+.preview-page h4,
+.preview-page h5,
+.preview-page h6 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
-/* Print styles */
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+
+/* da preview na ekranu izgleda kao A4 */
+.preview-wrap {
+  background: #ff0101;
+  padding: 1px;
+  display: grid;
+  place-items: center;
+}
+.preview-wrap .print-page {
+  background: white;
+}
+
+/* Constrain images within the page to avoid expansion */
+.preview-page img {
+  max-width: 100% !important;
+}
+
+/* print settings */
 @media print {
-  /* Hide UI controls */
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .no-print {
     display: none !important;
   }
 
-  /* Set A4 page size and margins */
-  @page {
-    size: A4 landscape;
-    margin: 10mm;
+  .preview-wrap {
+    padding: 0 !important;
+    background: transparent !important;
   }
 
-  /* Ensure printed content uses full width without extra shadows/radii */
-  .print-reset,
-  .print-container {
+  .print-page {
     box-shadow: none !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
   }
-
-  /* Landscape width: 297mm */
-  .print-container {
-    width: 297mm !important;
-    max-width: 297mm !important;
-  }
-
-  /* Force exactly one A4 page height and clip overflow */
-  .preview-page {
-    height: 210mm !important;
-    max-height: 210mm !important;
-    overflow: hidden !important;
+  /* Hide everything outside the preview page for print */
+  body *:not(.preview-page):not(.preview-page *) {
+    display: none !important;
   }
 }
