@@ -9,7 +9,9 @@ export const revalidate = 120;
 export default async function MemoryDetailPage({ params }: Params) {
   const { slug } = await params;
 
-  const memory = await prisma.memory.findUnique({ where: { slug } });
+  const memory = await prisma.memory.findFirst({
+    where: { slug, status: "published" },
+  });
   if (!memory) return notFound();
 
   return (

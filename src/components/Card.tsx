@@ -20,10 +20,10 @@ export default function Card({
   href,
 }: CardProps) {
   return (
-    <div className="bg-white border shadow-sm px-6 py-6 font-serif text-neutral-900">
+    <div className="flex h-full flex-col bg-white border shadow-sm px-6 py-6 font-serif text-neutral-900">
       {/* Image */}
       <div className="flex justify-center">
-        <div className="relative h-36 w-28 overflow-hidden  border-4 border-black bg-neutral-50">
+        <div className="relative h-36 w-28 overflow-hidden border-4 border-black bg-neutral-50">
           {imageSrc && (
             <img
               src={imageSrc}
@@ -54,8 +54,8 @@ export default function Card({
 
       <div className="mx-auto my-4 h-px w-16 bg-neutral-200" />
 
-      {/* Buttons */}
-      <div className="mt-6 space-y-3">
+      {/* Buttons - push to bottom */}
+      <div className="mt-auto space-y-3">
         {href && (
           <Link
             href={href}

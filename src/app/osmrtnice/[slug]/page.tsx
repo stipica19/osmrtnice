@@ -30,8 +30,8 @@ export default async function Page({ params }: PageProps) {
 
   if (!slug) return notFound();
 
-  const o = await prisma.obituary.findUnique({
-    where: { slug },
+  const o = await prisma.obituary.findFirst({
+    where: { slug, status: "published" },
   });
 
   if (!o) return notFound();

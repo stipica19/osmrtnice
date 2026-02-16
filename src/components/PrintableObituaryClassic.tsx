@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
-import { Button } from "@/components/ui/button";
+import React, { useLayoutEffect, useRef } from "react";
 import { ObituaryPreviewClassic } from "./ObituaryPreviewClassic";
+import { PrintButton } from "@/components/PrintButton";
+import type { ObituaryPreviewSettings } from "@/lib/obituary";
 
 type UploadedImage = { secureUrl: string };
 
@@ -22,6 +22,7 @@ export function PrintableObituaryClassic({
   contentJson,
   contentJson1,
   footerText = "Počivala u miru Božjem!",
+  settings,
 }: {
   templateLeftUrl?: string;
   portrait?: UploadedImage | null;
@@ -39,16 +40,10 @@ export function PrintableObituaryClassic({
   contentJson?: any;
   contentJson1?: any;
   footerText?: string;
+  settings?: ObituaryPreviewSettings;
 }) {
   const printRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
-  const [scale, setScale] = useState(1);
-
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `${firstName ?? "Ime"} ${lastName ?? "Prezime"} - osmrtnica`,
-    preserveAfterPrint: true,
-  });
 
   const applyScale = () => {
     const pageEl = printRef.current;
@@ -67,14 +62,9 @@ export function PrintableObituaryClassic({
     const contentW = innerEl.scrollWidth;
     const contentH = innerEl.scrollHeight;
 
-    if (!pageW || !pageH || !contentW || !contentH) {
-      setScale(1);
-      return;
-    }
+    if (!pageW || !pageH || !contentW || !contentH) return;
 
     const nextScale = Math.min(1, pageW / contentW, pageH / contentH);
-    setScale(nextScale);
-
     innerEl.style.transformOrigin = "top left";
     innerEl.style.transform = `scale(${nextScale})`;
 
@@ -141,12 +131,16 @@ export function PrintableObituaryClassic({
     footerText,
     portrait?.secureUrl,
     announcementDate,
+    settings?.fontFamily,
+    settings?.contentSize,
+    settings?.familySize,
+    settings?.imageFit,
   ]);
 
   return (
     <div className="mx-auto print-container preview-a4-landscape">
       <div ref={printRef} className="preview-page">
-        <div ref={innerRef} className="h-full w-full">
+        <div ref={innerRef} className="h-full w-full print-scale-target">
           <div className="h-full w-full">
             <ObituaryPreviewClassic
               templateLeftUrl={templateLeftUrl}
@@ -165,14 +159,17 @@ export function PrintableObituaryClassic({
               contentJson={contentJson}
               contentJson1={contentJson1}
               footerText={footerText}
+              settings={settings}
             />
           </div>
         </div>{" "}
       </div>
 
       <div className="no-print mt-4 flex items-center gap-2">
-        <Button onClick={handlePrint}>Ispiši / PDF</Button>
-        <span className="text-sm opacity-70">scale: {scale.toFixed(3)}</span>
+        <PrintButton
+          contentRef={printRef}
+          documentTitle={`${firstName ?? "Ime"} ${lastName ?? "Prezime"} - osmrtnica`}
+        />
       </div>
     </div>
   );

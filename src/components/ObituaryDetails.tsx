@@ -12,8 +12,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const o = await prisma.obituary.findUnique({
-    where: { slug: params.slug },
+  const o = await prisma.obituary.findFirst({
+    where: { slug: params.slug, status: "published" },
     select: {
       firstName: true,
       lastName: true,

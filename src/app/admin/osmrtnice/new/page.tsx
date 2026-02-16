@@ -3,25 +3,21 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useMemo } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-import { RichEditor } from "@/components/RichEditor";
-import { ImageUploader } from "@/components/ImageUploader";
-
 import { PrintableObituaryClassic } from "@/components/PrintableObituaryClassic";
-import { useEffect } from "react";
+import { AdminGuard } from "@/components/AdminGuard";
+import { ObituaryForm } from "@/components/ObituaryForm";
+
 import { createSlug } from "@/lib/slug";
+import { useDebouncedValue } from "@/lib/hooks";
+import {
+  DEFAULT_OBITUARY_SETTINGS,
+  mapObituaryFormToPreview,
+  type ObituaryFormValues,
+} from "@/lib/obituary";
+import { ADMIN_HEADER, getAdminKeyFromStorage } from "@/lib/admin";
 
 const schema = z.object({
   firstName: z.string().min(1, "Obavezno"),
@@ -39,10 +35,16 @@ const schema = z.object({
   contentJson: z.any(),
   contentJson1: z.any(),
 
-  image: z.string(),
+  image: z.string().optional(),
+  settings: z.object({
+    fontFamily: z.enum(["serif", "sans", "classic"]),
+    contentSize: z.enum(["sm", "md", "lg"]),
+    familySize: z.enum(["sm", "md", "lg"]),
+    imageFit: z.enum(["cover", "contain"]),
+  }),
 });
 
-type Values = z.infer<typeof schema>;
+type Values = ObituaryFormValues;
 
 export default function Page() {
   const form = useForm<Values>({
@@ -58,22 +60,37 @@ export default function Page() {
       contentJson: { type: "doc", content: [{ type: "paragraph" }] },
       contentJson1: { type: "doc", content: [{ type: "paragraph" }] },
       image: "",
+      settings: DEFAULT_OBITUARY_SETTINGS,
     },
   });
 
-  const v = form.watch();
+  const firstName = form.watch("firstName");
+  const lastName = form.watch("lastName");
+  const deathDate = form.watch("deathDate");
+  const watched = form.watch();
+  const debounced = useDebouncedValue(watched, 150);
+  const previewModel = useMemo(
+    () => mapObituaryFormToPreview(debounced),
+    [debounced],
+  );
 
   useEffect(() => {
-    const slug = createSlug(v.firstName, v.lastName, v.deathDate);
-    if (slug && slug !== v.slug) {
+    const slug = createSlug(firstName, lastName, deathDate);
+    if (slug && slug !== form.getValues("slug")) {
       form.setValue("slug", slug);
     }
-  }, [v.firstName, v.lastName, v.deathDate]);
+  }, [firstName, lastName, deathDate, form]);
 
   async function onSubmit(values: Values) {
+    const adminKey = getAdminKeyFromStorage();
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (adminKey) headers[ADMIN_HEADER] = adminKey;
+
     const res = await fetch("/api/osmrtnice", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(values),
     });
 
@@ -88,22 +105,23 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 ">
-      <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/30 dark:bg-amber-950/20">
         <div className="flex items-start gap-3">
           <span
             className="mt-1 inline-block h-2 w-2 rounded-full bg-amber-400"
             aria-hidden
           />
           <div>
-            <h2 className="font-serif text-lg font-semibold text-amber-900">
-              Predajte oglas na Osmrtnice.hr
+            <h2 className="font-serif text-lg font-semibold text-amber-900 dark:text-amber-100">
+              Kreiranje nove osmrtnice
             </h2>
-            <p className="mt-1 text-sm text-amber-900">
-              Predajte oglas brzo i jednostavno koristeći obrazac ispod. Za svu
+            <p className="mt-1 text-sm text-amber-900 dark:text-amber-200">
+              Pažljivo popunite obrazac sa svim potrebnim podacima. Pregled
+              osmrtnice će se prikazati u realnom vremenu na desnoj strani. Za
               pomoć i pitanja nazovite
               <a
-                href="tel:+38598430381"
+                href="tel:+38763063111"
                 className="ml-1 font-semibold underline"
               >
                 063063111
@@ -112,197 +130,19 @@ export default function Page() {
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <Card>
           <CardHeader>
             <CardTitle>Nova osmrtnica</CardTitle>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form
-                className="space-y-6"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ime</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Prezime</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="spol"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Spol</FormLabel>
-                        <FormControl>
-                          <div className="flex items-center gap-6">
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="radio"
-                                value="M"
-                                checked={field.value === "M"}
-                                onChange={() => field.onChange("M")}
-                              />
-                              <span>Muško</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="radio"
-                                value="Z"
-                                checked={field.value === "Z"}
-                                onChange={() => field.onChange("Z")}
-                              />
-                              <span>Žensko</span>
-                            </label>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {form.watch("spol") === "Z" && (
-                    <FormField
-                      control={form.control}
-                      name="djevojackoPrezime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Djevojacko prezime</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="birthDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Godina rodjenja</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="deathDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Datum smrti</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="contentJson"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Pokop ce se obaviti ...</FormLabel>
-                      <FormControl>
-                        <RichEditor
-                          value={field.value}
-                          onChange={field.onChange}
-                          placeholder="Npr: Pokop će se obaviti u petak, 12.11. u 15:00 na mjesnom groblju…"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="contentJson1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ožalošćeni</FormLabel>
-                      <FormControl>
-                        <RichEditor
-                          value={field.value}
-                          onChange={field.onChange}
-                          placeholder="Npr: Braća, sestre, djeca i unuci…"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Slika</FormLabel>
-                      <FormControl>
-                        <ImageUploader
-                          value={(field.value as string) || null}
-                          onChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit">Spremi</Button>
-              </form>
-            </Form>
+            <ObituaryForm form={form} onSubmit={onSubmit} />
           </CardContent>
         </Card>
 
         <div className="lg:sticky lg:col-span-2 lg:top-6">
-          <PrintableObituaryClassic
-            templateLeftUrl="/templates/cross.jpg"
-            portrait={v.image ? { secureUrl: v.image } : null}
-            announcementDate={v.deathDate}
-            firstName={v.firstName}
-            lastName={v.lastName}
-            djevojackoPrezime={v.djevojackoPrezime}
-            spol={v.spol}
-            birthDate={v.birthDate}
-            deathDate={v.deathDate}
-            contentJson={v.contentJson}
-            contentJson1={v.contentJson1}
-            footerText={`${v.spol === "Z" ? "Počivala" : "Počivao"} u miru Božjem!`}
-          />
+          <PrintableObituaryClassic {...previewModel} />
         </div>
       </div>
     </div>

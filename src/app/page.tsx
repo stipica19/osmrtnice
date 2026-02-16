@@ -14,8 +14,40 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-7xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="max-w-max grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 justify-center items-center">
+      <main className="flex min-h-screen w-full max-w-7xl flex-col items-center  py-32 px-16 bg-white dark:bg-black sm:items-start">
+        {/* Hero Section */}
+        <div className="mb-16 w-full text-center">
+          <h1 className="font-serif text-4xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 sm:text-5xl">
+            In Memoriam
+          </h1>
+          <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-300 max-w-3xl mx-auto">
+            Mjesto sjećanja na naše najmilije koji su nas napustili. Ovdje
+            čuvamo uspomene i odajemo počast onima koji će zauvijek ostati u
+            našim srcima.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <a
+              href="/sjecanja"
+              className="inline-flex items-center rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 transition"
+            >
+              Pogledaj sjećanja
+            </a>
+            <a
+              href="/admin/sjecanja/new"
+              className="inline-flex items-center rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-neutral-900 shadow-sm hover:bg-neutral-50 transition dark:bg-neutral-900 dark:text-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+            >
+              Predaj sjećanje
+            </a>
+          </div>
+        </div>
+
+        {/* Obituaries Grid */}
+        <div className="w-full">
+          <h2 className="font-serif text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-6 mt-6">
+            Osmrtnice
+          </h2>
+        </div>
+        <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 items-stretch">
           {obituaries.map((o: any) => {
             const fullName = [o.firstName, o.lastName]
               .filter(Boolean)
