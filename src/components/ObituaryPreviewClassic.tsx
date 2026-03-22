@@ -1,7 +1,9 @@
 import { TIPTAP_EXTENSIONS } from "@/lib/tiptapExtensions";
 import { generateHTML } from "@tiptap/html";
+import type { JSONContent } from "@tiptap/core";
 import { formatDateHr, formatYear } from "@/lib/format";
 import type { ObituaryPreviewSettings } from "@/lib/obituary";
+import Image from "next/image";
 
 type UploadedImage = {
   secureUrl: string;
@@ -39,13 +41,19 @@ export function ObituaryPreviewClassic({
   funeralTime?: string;
   cemetery?: string;
   familyText?: string;
-  contentJson?: any;
-  contentJson1?: any;
+  contentJson?: JSONContent;
+  contentJson1?: JSONContent;
   footerText?: string;
   settings?: ObituaryPreviewSettings;
 }) {
   const fullName =
     [firstName, lastName].filter(Boolean).join(" ") || "Ime Prezime";
+
+  void funeralDate;
+  void funeralTime;
+  void cemetery;
+  void familyText;
+  void deathDate;
 
   const pokop_desc = contentJson?.type
     ? generateHTML(contentJson, [...TIPTAP_EXTENSIONS])
@@ -95,9 +103,11 @@ export function ObituaryPreviewClassic({
       <div className="overflow-hidden rounded-xl bg-white">
         <div className="grid h-full grid-cols-[32%_1fr]">
           <div className="h-full bg-neutral-900">
-            <img
-              src="/kriz.jpg"
+            <Image
+              src={templateLeftUrl}
               alt="motiv"
+              width={400}
+              height={1200}
               className="h-[19cm] w-full object-cover"
             />
           </div>
@@ -109,9 +119,11 @@ export function ObituaryPreviewClassic({
             >
               {portrait?.secureUrl && (
                 <div className="mb-4 h-36 w-28 overflow-hidden rounded-md border">
-                  <img
+                  <Image
                     src={portrait.secureUrl}
                     alt="portret"
+                    width={112}
+                    height={144}
                     className={`h-full w-full ${imageFitClass}`}
                   />
                 </div>

@@ -2,12 +2,12 @@
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useEffect, useMemo } from "react";
+import type { JSONContent } from "@tiptap/core";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PrintableObituaryClassic } from "@/components/PrintableObituaryClassic";
-import { AdminGuard } from "@/components/AdminGuard";
 import { ObituaryForm } from "@/components/ObituaryForm";
 
 import { createSlug } from "@/lib/slug";
@@ -16,8 +16,8 @@ import {
   DEFAULT_OBITUARY_SETTINGS,
   mapObituaryFormToPreview,
   type ObituaryFormValues,
+  type ObituaryPreviewSettings,
 } from "@/lib/obituary";
-import { ADMIN_HEADER, getAdminKeyFromStorage } from "@/lib/admin";
 
 const schema = z.object({
   firstName: z.string().min(1, "Obavezno"),
@@ -64,14 +64,57 @@ export default function Page() {
     },
   });
 
-  const firstName = form.watch("firstName");
-  const lastName = form.watch("lastName");
-  const deathDate = form.watch("deathDate");
-  const watched = form.watch();
+  const firstName = useWatch({ control: form.control, name: "firstName" });
+  const lastName = useWatch({ control: form.control, name: "lastName" });
+  const deathDate = useWatch({ control: form.control, name: "deathDate" });
+  const watched = useWatch({ control: form.control });
   const debounced = useDebouncedValue(watched, 150);
-  const previewModel = useMemo(
-    () => mapObituaryFormToPreview(debounced),
+
+  const asJsonContent = (value: unknown): JSONContent | null =>
+    value && typeof value === "object" ? (value as JSONContent) : null;
+
+  const previewValues = useMemo<ObituaryFormValues>(
+    () => {
+      const normalizedSettings: ObituaryPreviewSettings = {
+        fontFamily:
+          debounced.settings?.fontFamily ?? DEFAULT_OBITUARY_SETTINGS.fontFamily,
+        contentSize:
+          debounced.settings?.contentSize ?? DEFAULT_OBITUARY_SETTINGS.contentSize,
+        familySize:
+          debounced.settings?.familySize ?? DEFAULT_OBITUARY_SETTINGS.familySize,
+        imageFit:
+          debounced.settings?.imageFit ?? DEFAULT_OBITUARY_SETTINGS.imageFit,
+      };
+
+      return {
+        firstName: debounced.firstName ?? "",
+        lastName: debounced.lastName ?? "",
+        djevojackoPrezime: debounced.djevojackoPrezime ?? "",
+        spol: debounced.spol,
+        birthDate: debounced.birthDate ?? "",
+        deathDate: debounced.deathDate ?? "",
+        slug: debounced.slug ?? "",
+        status: debounced.status ?? "draft",
+        publishedAt: debounced.publishedAt ?? "",
+        contentJson: asJsonContent(debounced.contentJson),
+        contentJson1: asJsonContent(debounced.contentJson1),
+        image: debounced.image ?? "",
+        settings: normalizedSettings,
+      };
+    },
     [debounced],
+  );
+
+  const previewModel = useMemo(
+    () => {
+      const mapped = mapObituaryFormToPreview(previewValues);
+      return {
+        ...mapped,
+        contentJson: mapped.contentJson ?? undefined,
+        contentJson1: mapped.contentJson1 ?? undefined,
+      };
+    },
+    [previewValues],
   );
 
   useEffect(() => {
@@ -82,15 +125,11 @@ export default function Page() {
   }, [firstName, lastName, deathDate, form]);
 
   async function onSubmit(values: Values) {
-    const adminKey = getAdminKeyFromStorage();
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-    if (adminKey) headers[ADMIN_HEADER] = adminKey;
-
     const res = await fetch("/api/osmrtnice", {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
 

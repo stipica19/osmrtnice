@@ -2,6 +2,7 @@
 
 import type { DragEvent } from "react";
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { uploadToCloudinary } from "../lib/cloudinary-client";
 
@@ -24,8 +25,9 @@ export function ImageUploader({
     try {
       const res = await uploadToCloudinary(file);
       onChange(res.secure_url);
-    } catch (e: any) {
-      setError(e?.message ?? "Upload nije uspio.");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Upload nije uspio.";
+      setError(message);
     } finally {
       setIsUploading(false);
     }
@@ -63,11 +65,9 @@ export function ImageUploader({
         aria-label="Upload slike"
       >
         {value ? (
-          <img
-            src={value}
-            alt="preview"
-            className="h-full w-full rounded-md object-cover"
-          />
+            <div className="relative h-full w-full overflow-hidden rounded-md">
+              <Image src={value} alt="preview" fill sizes="160px" className="object-cover" />
+            </div>
         ) : (
           <div className="text-center text-muted-foreground">
             <p>Drag & drop</p>

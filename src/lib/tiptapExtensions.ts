@@ -2,6 +2,18 @@ import StarterKit from "@tiptap/starter-kit";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Extension } from "@tiptap/core";
+import type { AnyExtension } from "@tiptap/core";
+
+type PlaceholderOptions = {
+    placeholder?: string;
+    showOnlyWhenFocused?: boolean;
+    showOnlyWhenEditable?: boolean;
+    emptyNodeClass?: string;
+};
+
+const PlaceholderExtension = Placeholder as {
+    configure: (options?: PlaceholderOptions) => AnyExtension;
+};
 
 export const FontSize = Extension.create({
     name: "fontSize",
@@ -24,12 +36,12 @@ export const FontSize = Extension.create({
     },
 });
 
-export const TIPTAP_EXTENSIONS = [StarterKit, TextStyle, FontSize] as const;
+export const TIPTAP_EXTENSIONS: AnyExtension[] = [StarterKit, TextStyle, FontSize];
 
-export function getTiptapExtensions(placeholder?: string) {
+export function getTiptapExtensions(placeholder?: string): AnyExtension[] {
     return [
         ...TIPTAP_EXTENSIONS,
-        Placeholder.configure({
+        PlaceholderExtension.configure({
             placeholder: placeholder ?? "Upišite tekst…",
             showOnlyWhenFocused: false,
             showOnlyWhenEditable: true,

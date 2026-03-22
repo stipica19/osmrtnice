@@ -2,6 +2,7 @@
 
 import type { UseFormReturn } from "react-hook-form";
 import { generateHTML } from "@tiptap/html";
+import type { JSONContent } from "@tiptap/core";
 import { TIPTAP_EXTENSIONS } from "@/lib/tiptapExtensions";
 import { useDebouncedValue } from "@/lib/hooks";
 import type { MemoryFormValues } from "@/lib/memory";
@@ -35,7 +36,7 @@ export function MemoryForm({
   const debounced = useDebouncedValue(watched, 200);
   const contentJson = debounced.content || null;
   const contentHtml = contentJson
-    ? generateHTML(contentJson as any, TIPTAP_EXTENSIONS as any)
+    ? generateHTML(contentJson as JSONContent, [...TIPTAP_EXTENSIONS])
     : "";
   const wordCount = contentHtml
     ? contentHtml
@@ -123,7 +124,10 @@ export function MemoryForm({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <RichEditor value={field.value} onChange={field.onChange} />
+                    <RichEditor
+                      value={field.value as JSONContent | null | undefined}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <div className="mt-1 text-xs text-muted-foreground">
                     {wordCount}/{MAX_WORDS} riječi

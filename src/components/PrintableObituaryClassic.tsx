@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useRef } from "react";
+import type { JSONContent } from "@tiptap/core";
 import { ObituaryPreviewClassic } from "./ObituaryPreviewClassic";
 import { PrintButton } from "@/components/PrintButton";
 import type { ObituaryPreviewSettings } from "@/lib/obituary";
@@ -37,8 +38,8 @@ export function PrintableObituaryClassic({
   funeralTime?: string;
   cemetery?: string;
   familyText?: string;
-  contentJson?: any;
-  contentJson1?: any;
+  contentJson?: JSONContent;
+  contentJson1?: JSONContent;
   footerText?: string;
   settings?: ObituaryPreviewSettings;
 }) {
@@ -113,7 +114,6 @@ export function PrintableObituaryClassic({
       window.removeEventListener("resize", onResize);
       mo.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     firstName,
     lastName,

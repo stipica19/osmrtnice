@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 type CardProps = {
   imageSrc: string;
@@ -15,21 +16,20 @@ export default function Card({
   fullName,
   birthDate,
   deathDate,
-  location,
   age,
   href,
 }: CardProps) {
-  return (
-    <div className="flex h-full flex-col bg-white border shadow-sm px-6 py-6 font-serif text-neutral-900">
+  const cardContent = (
+    <>
       {/* Image */}
       <div className="flex justify-center">
         <div className="relative h-36 w-28 overflow-hidden border-4 border-black bg-neutral-50">
           {imageSrc && (
-            <img
+            <Image
               src={imageSrc}
               alt={fullName}
-              height={150}
-              width={150}
+              fill
+              sizes="112px"
               className="h-full w-full object-cover"
             />
           )}
@@ -53,18 +53,25 @@ export default function Card({
       )}
 
       <div className="mx-auto my-4 h-px w-16 bg-neutral-200" />
+    </>
+  );
 
-      {/* Buttons - push to bottom */}
-      <div className="mt-auto space-y-3">
-        {href && (
-          <Link
-            href={href}
-            className="block w-full rounded-md border border-amber-400 py-2 text-center text-sm font-medium text-amber-600 transition hover:bg-amber-50"
-          >
-            Pročitaj više
-          </Link>
-        )}
-      </div>
-    </div>
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="group block h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+      >
+        <article className="flex h-full flex-col border bg-white px-6 py-6 font-serif text-neutral-900 shadow-sm transition group-hover:-translate-y-0.5 group-hover:shadow-md">
+          {cardContent}
+        </article>
+      </Link>
+    );
+  }
+
+  return (
+    <article className="flex h-full flex-col border bg-white px-6 py-6 font-serif text-neutral-900 shadow-sm">
+      {cardContent}
+    </article>
   );
 }

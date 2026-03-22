@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 type Props = {
   personInfo: string;
   imageUrl?: string | null;
@@ -41,15 +43,19 @@ export default function MemoryCard({
       <div className="mx-auto mb-6 w-[150px]">
         <div className="relative  border bg-white dark:bg-neutral-900">
           {imageUrl ? (
-            <img
+            <Image
               src={imageUrl}
               alt={personInfo}
+              width={150}
+              height={150}
               className="block h-[150px] w-[150px] object-cover"
             />
           ) : (
-            <img
+            <Image
               src="/kriz-sjecanja.png"
               alt="križ"
+              width={150}
+              height={150}
               className="block h-[150px] w-[150px] object-cover"
             />
           )}

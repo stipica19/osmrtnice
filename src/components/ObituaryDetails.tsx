@@ -2,65 +2,10 @@ import { Extension } from "@tiptap/core";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { generateHTML } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
+import type { JSONContent } from "@tiptap/core";
 
-import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import Image from "next/image";
 import ShareButtons from "./ShareButtons";
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const o = await prisma.obituary.findFirst({
-    where: { slug: params.slug, status: "published" },
-    select: {
-      firstName: true,
-      lastName: true,
-      birthDate: true,
-      deathDate: true,
-      image: true,
-    },
-  });
-
-  if (!o) {
-    return {};
-  }
-
-  const fullName = [o.firstName, o.lastName].filter(Boolean).join(" ");
-
-  const deathDate = o.deathDate
-    ? new Date(o.deathDate).toLocaleDateString("hr-HR")
-    : "";
-
-  const title = deathDate ? `${fullName} • preminuo/la ${deathDate}` : fullName;
-
-  const imageUrl =
-    typeof o.image === "string"
-      ? o.image
-      : (o.image as any)?.secureUrl || (o.image as any)?.url;
-
-  return {
-    title,
-    description: `S tugom javljamo da je preminuo/la ${fullName}.`,
-    openGraph: {
-      title,
-      description: `S tugom javljamo da je preminuo/la ${fullName}.`,
-      type: "article",
-      locale: "hr_HR",
-      images: imageUrl
-        ? [
-            {
-              url: imageUrl,
-              width: 1200,
-              height: 630,
-              alt: fullName,
-            },
-          ]
-        : [],
-    },
-  };
-}
 
 type Props = {
   portraitUrl?: string | null;
@@ -70,8 +15,8 @@ type Props = {
   spol?: "M" | "Z";
   birthYear?: string;
   deathDate?: string; // ISO yyyy-mm-dd
-  contentJson?: any;
-  contentJson1?: any;
+  contentJson?: JSONContent;
+  contentJson1?: JSONContent;
 };
 const FontSize = Extension.create({
   name: "fontSize",
@@ -133,13 +78,15 @@ export default function ObituaryDetails({
         : "";
 
   return (
-    <div className="mx-auto max-w-[800px] bg-white px-8 py-10 font-serif text-neutral-900 print:max-w-none print:px-12 print:py-16">
+    <div className="mx-auto max-w-200 bg-white px-8 py-10 font-serif text-neutral-900 print:max-w-none print:px-12 print:py-16">
       {/* PORTRET */}
       {portraitUrl && (
         <div className="mb-6 flex justify-center">
-          <img
+          <Image
             src={portraitUrl}
             alt="Portret"
+            width={160}
+            height={160}
             className="h-40 w-40 rounded-md border object-cover"
           />
         </div>

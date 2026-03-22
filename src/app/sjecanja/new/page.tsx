@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { generateHTML } from "@tiptap/html";
+import type { JSONContent } from "@tiptap/core";
 import { TIPTAP_EXTENSIONS } from "@/lib/tiptapExtensions";
 import { MemoryForm } from "@/components/MemoryForm";
 import type { MemoryFormValues } from "@/lib/memory";
@@ -42,7 +43,7 @@ export default function NewMemoryPage() {
   async function onSubmit(values: Values) {
     try {
       const contentHtmlLocal = values.content
-        ? generateHTML(values.content as any, TIPTAP_EXTENSIONS as any)
+        ? generateHTML(values.content as JSONContent, [...TIPTAP_EXTENSIONS])
         : "";
       const res = await fetch("/api/sjecanja", {
         method: "POST",
@@ -66,8 +67,9 @@ export default function NewMemoryPage() {
 
       alert("Hvala! Vaše sjećanje je zabilježeno.");
       router.push("/sjecanja");
-    } catch (e: any) {
-      alert(e?.message ?? "Neuspješno slanje.");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Neuspješno slanje.";
+      alert(message);
     }
   }
 

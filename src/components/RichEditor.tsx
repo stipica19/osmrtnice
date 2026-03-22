@@ -1,42 +1,18 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { TextStyle } from "@tiptap/extension-text-style";
-import { Extension } from "@tiptap/core";
+import type { JSONContent } from "@tiptap/core";
 import { Bold } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTiptapExtensions } from "@/lib/tiptapExtensions";
-
-const FontSize = Extension.create({
-  name: "fontSize",
-  addGlobalAttributes() {
-    return [
-      {
-        types: ["textStyle"],
-        attributes: {
-          fontSize: {
-            default: null,
-            parseHTML: (element) =>
-              (element as HTMLElement).style.fontSize || null,
-            renderHTML: (attributes) => {
-              if (!attributes.fontSize) return {};
-              return { style: `font-size: ${attributes.fontSize}` };
-            },
-          },
-        },
-      },
-    ];
-  },
-});
 
 export function RichEditor({
   value,
   onChange,
   placeholder,
 }: {
-  value: any;
-  onChange: (json: any) => void;
+  value: JSONContent | null | undefined;
+  onChange: (json: JSONContent) => void;
   placeholder?: string;
 }) {
   const editor = useEditor({

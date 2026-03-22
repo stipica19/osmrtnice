@@ -3,14 +3,16 @@ import { NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/admin"
 
 export async function GET() {
+    const isAdmin = await requireAdmin()
     const items = await prisma.obituary.findMany({
+        where: isAdmin ? undefined : { status: "published" },
         orderBy: { createdAt: "desc" },
     })
     return NextResponse.json(items)
 }
 
 export async function POST(req: Request) {
-    if (!requireAdmin(req)) {
+    if (!(await requireAdmin())) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -62,10 +64,11 @@ export async function POST(req: Request) {
         })
 
         return NextResponse.json(created)
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Failed to create obituary";
         console.error("Error creating obituary:", error)
         return NextResponse.json(
-            { error: error.message || "Failed to create obituary" },
+            { error: message },
             { status: 500 }
         )
     }

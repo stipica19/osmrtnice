@@ -1,6 +1,7 @@
 "use client";
 
 import type { UseFormReturn } from "react-hook-form";
+import type { JSONContent } from "@tiptap/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,11 +17,7 @@ import { ImageUploader } from "@/components/ImageUploader";
 import { UI_TEXT } from "@/lib/i18n";
 import type { ObituaryFormValues } from "@/lib/obituary";
 
-const SIZE_OPTIONS = [
-  { value: "sm", label: "A-" },
-  { value: "md", label: "A" },
-  { value: "lg", label: "A+" },
-] as const;
+
 
 export function ObituaryForm({
   form,
@@ -148,7 +145,7 @@ export function ObituaryForm({
               <FormLabel>Pokop će se obaviti ...</FormLabel>
               <FormControl>
                 <RichEditor
-                  value={field.value}
+                  value={field.value as JSONContent | null | undefined}
                   onChange={field.onChange}
                   placeholder="Npr: Pokop će se obaviti u petak, 12.11. u 15:00 na mjesnom groblju..."
                 />
@@ -166,7 +163,7 @@ export function ObituaryForm({
               <FormLabel>Ožalošćeni</FormLabel>
               <FormControl>
                 <RichEditor
-                  value={field.value}
+                  value={field.value as JSONContent | null | undefined}
                   onChange={field.onChange}
                   placeholder="Npr: Braca, sestre, djeca i unuci..."
                 />

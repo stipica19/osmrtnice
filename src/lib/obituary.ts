@@ -1,3 +1,5 @@
+import type { JSONContent } from "@tiptap/core";
+
 export type ObituaryPreviewSettings = {
     fontFamily: "serif" | "sans" | "classic";
     contentSize: "sm" | "md" | "lg";
@@ -22,8 +24,8 @@ export type ObituaryFormValues = {
     slug: string;
     status: "published" | "draft";
     publishedAt?: string;
-    contentJson: unknown;
-    contentJson1: unknown;
+    contentJson: JSONContent | null;
+    contentJson1: JSONContent | null;
     image?: string;
     settings: ObituaryPreviewSettings;
 };
@@ -38,8 +40,8 @@ export type ObituaryPreviewModel = {
     spol?: "M" | "Z";
     birthDate?: string;
     deathDate?: string;
-    contentJson?: unknown;
-    contentJson1?: unknown;
+    contentJson?: JSONContent | null;
+    contentJson1?: JSONContent | null;
     footerText?: string;
     settings?: ObituaryPreviewSettings;
 };

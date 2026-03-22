@@ -1,8 +1,18 @@
 import Card from "@/components/Card";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
 export default async function Home() {
   const obituaries = await prisma.obituary.findMany({
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      birthDate: true,
+      deathDate: true,
+      image: true,
+      slug: true,
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -26,18 +36,18 @@ export default async function Home() {
             našim srcima.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
-            <a
+            <Link
               href="/sjecanja"
               className="inline-flex items-center rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 transition"
             >
               Pogledaj sjećanja
-            </a>
-            <a
-              href="/admin/sjecanja/new"
+            </Link>
+            <Link 
+              href="/sjecanja/new"
               className="inline-flex items-center rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-semibold text-neutral-900 shadow-sm hover:bg-neutral-50 transition dark:bg-neutral-900 dark:text-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             >
               Predaj sjećanje
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -48,7 +58,7 @@ export default async function Home() {
           </h2>
         </div>
         <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 items-stretch">
-          {obituaries.map((o: any) => {
+          {obituaries.map((o) => {
             const fullName = [o.firstName, o.lastName]
               .filter(Boolean)
               .join(" ");
@@ -61,7 +71,7 @@ export default async function Home() {
                       (1000 * 60 * 60 * 24 * 365.25),
                   )
                 : null;
-            const imageSrc = o.image;
+            const imageSrc = o.image ?? "";
 
             return (
               <Card

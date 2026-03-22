@@ -1,24 +1,24 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import type { JSONContent } from "@tiptap/core";
 import { prisma } from "@/lib/prisma";
 import ObituaryDetails from "@/components/ObituaryDetails";
 
 export const revalidate = 60;
 export const runtime = "nodejs";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.SITE_URL ??
+  "https://osmrtnice-uskoplje.com";
+
+const siteOrigin = new URL(siteUrl);
+
 type PageProps = {
   params: { slug: string } | Promise<{ slug: string }> | string;
 };
 
-function getImageUrl(image: any): string | null {
-  if (!image) return null;
-  if (typeof image === "string") return image;
-  if (typeof image === "object") {
-    return (image as any).secureUrl || (image as any).url || null;
-  }
-  return null;
-}
-
-export default async function Page({ params }: PageProps) {
+async function resolveSlug(params: PageProps["params"]): Promise<string | null> {
   const raw = await Promise.resolve(params);
 
   const parsed =
@@ -26,7 +26,108 @@ export default async function Page({ params }: PageProps) {
       ? (JSON.parse(raw) as { slug?: string })
       : (raw as { slug?: string });
 
-  const slug = parsed.slug;
+  return parsed.slug ?? null;
+}
+
+function getImageUrl(image: unknown): string | null {
+  if (!image) return null;
+  if (typeof image === "string") return image;
+  if (typeof image === "object") {
+    const maybeImage = image as { secureUrl?: string; url?: string };
+    return maybeImage.secureUrl || maybeImage.url || null;
+  }
+  return null;
+}
+
+function toAbsoluteUrl(pathOrUrl: string): string {
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  const normalized = pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`;
+  return new URL(normalized, siteOrigin).toString();
+}
+
+function toJsonContent(value: unknown): JSONContent | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const candidate = value as JSONContent;
+  return typeof candidate.type === "string" ? candidate : undefined;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const slug = await resolveSlug(params);
+  if (!slug) {
+    return {
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const o = await prisma.obituary.findFirst({
+    where: { slug, status: "published" },
+    select: {
+      firstName: true,
+      lastName: true,
+      deathDate: true,
+      image: true,
+      slug: true,
+    },
+  });
+
+  if (!o) {
+    return {
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const fullName = [o.firstName, o.lastName].filter(Boolean).join(" ");
+  const deathDate = o.deathDate
+    ? new Date(o.deathDate).toLocaleDateString("hr-HR")
+    : "";
+
+  const title = deathDate
+    ? `${fullName} | Osmrtnica (${deathDate})`
+    : `${fullName} | Osmrtnica`;
+
+  const description = deathDate
+    ? `S tugom javljamo da je preminuo/la ${fullName} (${deathDate}).`
+    : `S tugom javljamo da je preminuo/la ${fullName}.`;
+
+  const obituaryUrl = toAbsoluteUrl(`/osmrtnice/${o.slug}`);
+  const imageUrl = getImageUrl(o.image);
+  const ogImage = imageUrl
+    ? toAbsoluteUrl(imageUrl)
+    : toAbsoluteUrl("/kriz.jpg");
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: obituaryUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: obituaryUrl,
+      siteName: "Osmrtnice",
+      locale: "hr_HR",
+      type: "article",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: fullName || "Osmrtnica",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
+
+export default async function Page({ params }: PageProps) {
+  const slug = await resolveSlug(params);
 
   if (!slug) return notFound();
 
@@ -54,8 +155,8 @@ export default async function Page({ params }: PageProps) {
           ? new Date(o.deathDate).toISOString().slice(0, 10)
           : undefined
       }
-      contentJson={o.contentJson}
-      contentJson1={o.contentJson1}
+      contentJson={toJsonContent(o.contentJson)}
+      contentJson1={toJsonContent(o.contentJson1)}
     />
   );
 }

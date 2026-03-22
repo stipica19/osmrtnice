@@ -1,5 +1,7 @@
 import { generateHTML } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
+import type { JSONContent } from "@tiptap/core";
+import Image from "next/image";
 
 type PreviewImage = {
   secureUrl: string;
@@ -19,7 +21,7 @@ export function ObituaryPreview({
   city?: string;
   birthDate?: string;
   deathDate?: string;
-  contentJson?: any;
+  contentJson?: JSONContent;
   image?: PreviewImage | null;
 }) {
   const title =
@@ -40,9 +42,11 @@ export function ObituaryPreview({
     <div className="rounded-xl border bg-background p-6 shadow-sm">
       <div className="flex gap-4 items-start">
         {image?.secureUrl ? (
-          <img
+          <Image
             src={image.secureUrl}
             alt="Slika"
+            width={112}
+            height={112}
             className="h-28 w-28 rounded-md border object-cover"
           />
         ) : (

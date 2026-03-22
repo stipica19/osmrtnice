@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { generateHTML } from "@tiptap/html";
+import type { JSONContent } from "@tiptap/core";
 import { TIPTAP_EXTENSIONS } from "@/lib/tiptapExtensions";
 import MemoryCard from "@/components/MemoryCard";
 
@@ -16,7 +17,7 @@ function toContentHtml(content: unknown): string {
   if (!content) return "";
   if (typeof content === "object") {
     try {
-      return generateHTML(content as any, TIPTAP_EXTENSIONS as any);
+      return generateHTML(content as JSONContent, [...TIPTAP_EXTENSIONS]);
     } catch {
       return "";
     }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rateLimit";
 import { getRequestIp } from "@/lib/request";
+import { requireAdmin } from "@/lib/admin";
 
 const MAX_WORDS = 100;
 
@@ -22,7 +23,9 @@ function countWords(html: string): number {
 }
 
 export async function GET() {
+    const isAdmin = await requireAdmin();
     const items = await prisma.memory.findMany({
+        where: isAdmin ? undefined : { status: "published" },
         orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(items);

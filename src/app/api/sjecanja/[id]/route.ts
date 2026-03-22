@@ -8,7 +8,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const body = await req.json().catch(() => ({}));
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-    if (!requireAdmin(req)) {
+    if (!(await requireAdmin())) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function DELETE(req: Request, { params }: Params) {
     const { id } = await params;
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-    if (!requireAdmin(req)) {
+    if (!(await requireAdmin())) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

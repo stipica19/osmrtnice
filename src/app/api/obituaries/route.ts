@@ -4,8 +4,10 @@ import { requireAdmin } from "@/lib/admin"
 // import { auth } from "@/lib/auth"
 
 export async function GET() {
+    const isAdmin = await requireAdmin();
     // List all obituaries, newest first
     const items = await prisma.obituary.findMany({
+        where: isAdmin ? undefined : { status: "published" },
         orderBy: { createdAt: "desc" },
     })
     return NextResponse.json(items)
@@ -13,7 +15,7 @@ export async function GET() {
 
 
 export async function POST(req: Request) {
-    if (!requireAdmin(req)) {
+    if (!(await requireAdmin())) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
