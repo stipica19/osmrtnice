@@ -1,10 +1,28 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <div className="mx-auto flex min-h-[70vh] w-full max-w-md items-center px-4">
+      <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
+        <p className="text-sm text-neutral-600">Ucitavanje...</p>
+      </div>
+    </div>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin/osmrtnice";
