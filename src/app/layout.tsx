@@ -23,6 +23,9 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  icons: {
+    icon: "/osmrtniceukoplje_2.svg",
+  },
   title: {
     default: "Osmrtnice Uskoplje",
     template: "%s | Osmrtnice Uskoplje",
