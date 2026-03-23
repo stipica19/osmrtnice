@@ -78,27 +78,27 @@ export default function ObituaryDetails({
         : "";
 
   return (
-    <div className="mx-auto max-w-200 bg-white px-8 py-10 font-serif text-neutral-900 print:max-w-none print:px-12 print:py-16">
+    <div className="mx-auto max-w-200 bg-white px-6 py-10 font-serif text-neutral-900 print:max-w-none print:px-12 print:py-16">
       {/* PORTRET */}
       {portraitUrl && (
         <div className="mb-6 flex justify-center">
           <Image
             src={portraitUrl}
             alt="Portret"
-            width={160}
-            height={160}
-            className="h-40 w-40 rounded-md border object-cover"
+            width={220}
+            height={220}
+            className="h-58 w-58 rounded-md border object-cover"
           />
         </div>
       )}
 
       {/* IME */}
       <h1 className="text-center text-4xl font-bold tracking-wide">
-        {fullName} ++
+        {fullName}
       </h1>
 
       {/* GODINA / DATUM */}
-      <p className="mt-2 text-center text-base text-neutral-600">
+      <p className="mt-2 text-center text-lg text-neutral-600">
         {birthLine}
         {dDate && (
           <>
@@ -113,7 +113,7 @@ export default function ObituaryDetails({
       {/* TEKST POKOPA */}
       {pokopDesc && (
         <div
-          className="prose prose-base mx-auto max-w-none text-center leading-relaxed
+          className="prose prose-base mx-auto max-w-none text-center text-lg leading-relaxed
                      prose-p:my-2 prose-strong:font-semibold"
           dangerouslySetInnerHTML={{ __html: pokopDesc }}
         />
@@ -122,12 +122,12 @@ export default function ObituaryDetails({
       {/* OŽALOŠĆENI */}
       {ozalosceni && (
         <div className="mt-8">
-          <h2 className="mb-2 text-center text-sm font-semibold tracking-widest uppercase text-neutral-600">
+          <h2 className="mb-2 text-center text-lg font-semibold tracking-widest uppercase text-neutral-600">
             Ožalošćeni
           </h2>
 
           <div
-            className="prose prose-sm mx-auto max-w-none text-center
+            className="prose prose-base mx-auto max-w-none text-center text-lg leading-relaxed
                        prose-p:my-1"
             dangerouslySetInnerHTML={{ __html: ozalosceni }}
           />

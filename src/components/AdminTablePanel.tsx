@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -32,6 +33,7 @@ type AdminTablePanelProps<T> = {
   getPublishedAt: (item: T) => string | null | undefined;
   onUpdateStatus: (item: T, status: "published" | "draft") => void;
   onDeleteItem: (item: T) => void;
+  getEditHref?: (item: T) => string;
 };
 
 function statusBadge(status: string) {
@@ -70,6 +72,7 @@ export default function AdminTablePanel<T>({
   getPublishedAt,
   onUpdateStatus,
   onDeleteItem,
+  getEditHref,
 }: AdminTablePanelProps<T>) {
   return (
     <div className="p-6 mb-0 mt-0 mr-auto ml-auto max-w-7xl space-y-6">
@@ -211,6 +214,11 @@ export default function AdminTablePanel<T>({
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
+                        {getEditHref ? (
+                          <Link href={getEditHref(item)}>
+                            <Button variant="secondary">Uredi</Button>
+                          </Link>
+                        ) : null}
                         <Button
                           variant="destructive"
                           onClick={() => onDeleteItem(item)}

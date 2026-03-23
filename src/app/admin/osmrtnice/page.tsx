@@ -168,6 +168,7 @@ export default function AdminObituariesPage() {
       }}
       getStatus={(item) => item.status}
       getPublishedAt={(item) => item.publishedAt}
+      getEditHref={(item) => `/admin/osmrtnice/${item.id}/edit`}
       onUpdateStatus={(item, status) => {
         void updateStatus(item.id, status);
       }}

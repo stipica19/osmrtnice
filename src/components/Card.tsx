@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import styles from "./Card.module.css";
 
 type CardProps = {
   imageSrc: string;
@@ -22,37 +23,37 @@ export default function Card({
   const cardContent = (
     <>
       {/* Image */}
-      <div className="flex justify-center">
-        <div className="relative h-36 w-28 overflow-hidden border-4 border-black bg-neutral-50">
+      <div className={styles.imageRow}>
+        <div className={styles.imageFrame}>
           {imageSrc && (
             <Image
               src={imageSrc}
               alt={fullName}
               fill
-              sizes="112px"
-              className="h-full w-full object-cover"
+              sizes="160px"
+              className={styles.image}
             />
           )}
         </div>
       </div>
 
       {/* Name */}
-      <h2 className="mt-4 text-center text-2xl font-bold tracking-wide">
+      <h2 className={styles.name}>
         {fullName}
       </h2>
 
       {/* Dates */}
-      <p className="mt-1 text-center text-sm text-neutral-600">
+      <p className={styles.dates}>
         {birthDate} {birthDate && deathDate ? "-" : ""} {deathDate}
       </p>
 
       {typeof age === "number" && age > 0 && (
-        <p className="mt-1 text-center text-xs text-neutral-500">
+        <p className={styles.age}>
           u {age} godini
         </p>
       )}
 
-      <div className="mx-auto my-4 h-px w-16 bg-neutral-200" />
+      <div className={styles.divider} />
     </>
   );
 
@@ -60,9 +61,9 @@ export default function Card({
     return (
       <Link
         href={href}
-        className="group block h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+        className={styles.link}
       >
-        <article className="flex h-full flex-col border bg-white px-6 py-6 font-serif text-neutral-900 shadow-sm transition group-hover:-translate-y-0.5 group-hover:shadow-md">
+        <article className={styles.article}>
           {cardContent}
         </article>
       </Link>
@@ -70,7 +71,7 @@ export default function Card({
   }
 
   return (
-    <article className="flex h-full flex-col border bg-white px-6 py-6 font-serif text-neutral-900 shadow-sm">
+    <article className={styles.article}>
       {cardContent}
     </article>
   );

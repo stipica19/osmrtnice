@@ -170,6 +170,7 @@ export default function AdminMemoriesPage() {
       )}
       getStatus={(item) => item.status}
       getPublishedAt={(item) => item.publishedAt}
+      getEditHref={(item) => `/admin/sjecanja/${item.id}/edit`}
       onUpdateStatus={(item, status) => {
         void updateStatus(item.id, status);
       }}

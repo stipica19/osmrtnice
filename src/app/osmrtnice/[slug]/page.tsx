@@ -84,6 +84,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = deathDate
     ? `${fullName} | Osmrtnica (${deathDate})`
     : `${fullName} | Osmrtnica`;
+  const shareTitle = fullName || "Osmrtnica";
 
   const description = deathDate
     ? `S tugom javljamo da je preminuo/la ${fullName} (${deathDate}).`
@@ -102,7 +103,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: obituaryUrl,
     },
     openGraph: {
-      title,
+      title: shareTitle,
       description,
       url: obituaryUrl,
       siteName: "Osmrtnice",

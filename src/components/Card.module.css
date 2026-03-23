@@ -1,0 +1,80 @@
+.link {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+.link:focus-visible {
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+.article {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  border: 1px solid #d4d4d4;
+  background: #ffffff;
+  padding: 1.5rem;
+  font-family: serif;
+  color: #171717;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.link:hover .article {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.imageRow {
+  display: flex;
+  justify-content: center;
+}
+
+.imageFrame {
+  position: relative;
+  width: 160px;
+  height: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 4px solid #000000;
+  background: #fafafa;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.dates {
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 16px;
+  color: #222222;
+}
+
+.age {
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 16px;
+  color: #222222;
+}
+
+.divider {
+  margin: 1rem auto;
+  height: 1px;
+  width: 4rem;
+  background: #e5e5e5;
+}

@@ -4,6 +4,78 @@ import { requireAdmin } from "@/lib/admin";
 
 type Params = { params: Promise<{ id: string }> };
 
+export async function GET(_req: Request, { params }: Params) {
+    const { id } = await params;
+    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+
+    if (!(await requireAdmin())) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const item = await prisma.obituary.findUnique({ where: { id } });
+    if (!item) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(item);
+}
+
+export async function PUT(req: Request, { params }: Params) {
+    const { id } = await params;
+    const body = await req.json().catch(() => ({}));
+
+    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    if (!(await requireAdmin())) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!body.firstName || !body.lastName || !body.slug) {
+        return NextResponse.json(
+            { error: "firstName, lastName i slug su obavezni" },
+            { status: 400 },
+        );
+    }
+
+    if (!body.contentJson || !body.contentJson1) {
+        return NextResponse.json(
+            { error: "contentJson i contentJson1 su obavezni" },
+            { status: 400 },
+        );
+    }
+
+    const nextStatus = body.status === "published" ? "published" : "draft";
+
+    try {
+        const updated = await prisma.obituary.update({
+            where: { id },
+            data: {
+                firstName: body.firstName,
+                lastName: body.lastName,
+                djevojackoPrezime: body.djevojackoPrezime || null,
+                spol: body.spol ?? null,
+                birthDate: body.birthDate ? new Date(body.birthDate) : null,
+                deathDate: body.deathDate ? new Date(body.deathDate) : null,
+                slug: body.slug,
+                status: nextStatus,
+                publishedAt:
+                    nextStatus === "published"
+                        ? body.publishedAt
+                            ? new Date(body.publishedAt)
+                            : new Date()
+                        : null,
+                contentJson: body.contentJson,
+                contentJson1: body.contentJson1,
+                image: body.image ?? null,
+            },
+        });
+
+        return NextResponse.json(updated);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Failed to update obituary";
+        return NextResponse.json({ error: message }, { status: 500 });
+    }
+}
+
 export async function PATCH(req: Request, { params }: Params) {
     const { id } = await params;
     const body = await req.json().catch(() => ({}));
