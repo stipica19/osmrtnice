@@ -64,6 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: {
       firstName: true,
       lastName: true,
+      birthDate: true,
       deathDate: true,
       image: true,
       slug: true,
@@ -77,6 +78,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const fullName = [o.firstName, o.lastName].filter(Boolean).join(" ");
+  const birthDate = o.birthDate
+    ? new Date(o.birthDate).toLocaleDateString("hr-HR")
+    : "";
   const deathDate = o.deathDate
     ? new Date(o.deathDate).toLocaleDateString("hr-HR")
     : "";
@@ -86,9 +90,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : `${fullName} | Osmrtnica`;
   const shareTitle = fullName || "Osmrtnica";
 
-  const description = deathDate
-    ? `S tugom javljamo da je preminuo/la ${fullName} (${deathDate}).`
-    : `S tugom javljamo da je preminuo/la ${fullName}.`;
+  const description = birthDate && deathDate
+    ? `${fullName} (${birthDate} - ${deathDate}). S tugom javljamo da je preminuo/la ${fullName}.`
+    : deathDate
+      ? `${fullName} (${deathDate}). S tugom javljamo da je preminuo/la ${fullName}.`
+      : `S tugom javljamo da je preminuo/la ${fullName}.`;
 
   const obituaryUrl = toAbsoluteUrl(`/osmrtnice/${o.slug}`);
   const imageUrl = getImageUrl(o.image);
