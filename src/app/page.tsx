@@ -1,4 +1,5 @@
 import Card from "@/components/Card";
+import { toCloudinaryAvif } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
@@ -38,7 +39,7 @@ export default async function Home() {
           <div className="mt-6 flex flex-wrap justify-center gap-4">
             <Link
               href="/sjecanja"
-              className="inline-flex items-center rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 transition"
+              className="btn-dark-color inline-flex items-center rounded-lg px-6 py-3 text-sm font-semibold text-white shadow-sm transition"
             >
               Pogledaj sjećanja
             </Link>
@@ -71,7 +72,7 @@ export default async function Home() {
                       (1000 * 60 * 60 * 24 * 365.25),
                   )
                 : null;
-            const imageSrc = o.image ?? "";
+            const imageSrc = toCloudinaryAvif(o.image ?? "");
 
             return (
               <Card

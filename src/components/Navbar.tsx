@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {signOut} from "next-auth/react";
+import Image from "next/image";
+import styles from "./Navbar.module.css";
 
 const baseNavItems = [
   { href: "/", label: "Osmrtnice" },
@@ -22,30 +24,22 @@ export default function Navbar() {
       : baseNavItems;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:border-neutral-800 dark:bg-neutral-950/95">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80 dark:border-neutral-800 dark:bg-neutral-950/95">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+          className={styles.logoLink}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-amber-500 to-amber-600 shadow-sm">
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
+          <div className={styles.logoFrame}>
+            <Image
+              src="/osmrtnicelogo_2.svg"
+              alt="Osmrtnice Uskoplje"
+              fill
+              priority
+              sizes="(max-width: 640px) 80px, 96px"
+              className={styles.logoImage}
+            />
           </div>
-          <span className="font-serif text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
-            Osmrtnice
-          </span>
         </Link>
 
         <nav className="hidden md:flex md:items-center md:gap-1">
@@ -53,7 +47,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+              className="rounded-md px-3 py-2 text-md font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
             >
               {item.label}
             </Link>

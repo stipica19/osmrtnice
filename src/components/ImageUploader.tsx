@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { uploadToCloudinary } from "../lib/cloudinary-client";
+import { toCloudinaryAvif } from "@/lib/cloudinary";
 
 export function ImageUploader({
   value,
@@ -24,7 +25,7 @@ export function ImageUploader({
     setIsUploading(true);
     try {
       const res = await uploadToCloudinary(file);
-      onChange(res.secure_url);
+      onChange(toCloudinaryAvif(res.secure_url));
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Upload nije uspio.";
       setError(message);
@@ -66,7 +67,7 @@ export function ImageUploader({
       >
         {value ? (
             <div className="relative h-full w-full overflow-hidden rounded-md">
-              <Image src={value} alt="preview" fill sizes="160px" className="object-cover" />
+              <Image src={toCloudinaryAvif(value)} alt="preview" fill sizes="160px" className="object-cover" />
             </div>
         ) : (
           <div className="text-center text-muted-foreground">

@@ -1,0 +1,29 @@
+.logoLink {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.9;
+}
+
+.logoFrame {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  padding: 0 8px;
+}
+
+.logoImage {
+  object-fit: contain;
+  object-position: left center;
+}
+
+@media (min-width: 640px) {
+  .logoFrame {
+    width: 96px;
+    height: 96px;
+  }
+}

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { JSONContent } from "@tiptap/core";
+import { toCloudinaryAvif } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import ObituaryDetails from "@/components/ObituaryDetails";
 
@@ -31,10 +32,10 @@ async function resolveSlug(params: PageProps["params"]): Promise<string | null> 
 
 function getImageUrl(image: unknown): string | null {
   if (!image) return null;
-  if (typeof image === "string") return image;
+  if (typeof image === "string") return toCloudinaryAvif(image);
   if (typeof image === "object") {
     const maybeImage = image as { secureUrl?: string; url?: string };
-    return maybeImage.secureUrl || maybeImage.url || null;
+    return toCloudinaryAvif(maybeImage.secureUrl || maybeImage.url || null);
   }
   return null;
 }

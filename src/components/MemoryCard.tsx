@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { toCloudinaryAvif } from "@/lib/cloudinary";
 
 type Props = {
   personInfo: string;
@@ -44,7 +45,7 @@ export default function MemoryCard({
         <div className="relative  border bg-white dark:bg-neutral-900">
           {imageUrl ? (
             <Image
-              src={imageUrl}
+              src={toCloudinaryAvif(imageUrl)}
               alt={personInfo}
               width={150}
               height={150}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ShareButtons from "./ShareButtons";
+import { toCloudinaryAvif } from "@/lib/cloudinary";
 
 type Props = {
   personInfo: string;
@@ -23,7 +24,7 @@ export default function MemoryDetails({
         <div className="h-40 w-40 overflow-hidden rounded-md border bg-neutral-50">
           {imageUrl ? (
             <Image
-              src={imageUrl}
+              src={toCloudinaryAvif(imageUrl)}
               alt={personInfo}
               width={160}
               height={160}

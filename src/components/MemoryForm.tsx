@@ -52,7 +52,7 @@ export function MemoryForm({
         <section className="mb-2">
           <h2 className="text-lg font-semibold">DATUM OBJAVE *</h2>
           <p className="text-sm text-muted-foreground">
-            Molimo vas da odaberete željeni datum objave za vaš oglas.
+            Molimo vas da odaberete željeni datum objave za vaše sjećanje.
           </p>
           <div className="mt-2 flex items-center gap-2">
             <FormField
@@ -73,8 +73,7 @@ export function MemoryForm({
         <section className="mb-2">
           <h2 className="text-lg font-semibold">PODACI ZA OBJAVU *</h2>
           <p className="text-sm text-muted-foreground">
-            Unesite podatke o osobi za koju predajete oglas: ime, prezime i
-            datume.
+            Unesite podatke o osobi za koju predajete oglas: ime, prezime
           </p>
           <div className="mt-2">
             <FormField
@@ -143,7 +142,7 @@ export function MemoryForm({
           <h2 className="text-lg font-semibold">VAŠI PODACI *</h2>
           <p className="text-sm text-muted-foreground">
             Molimo vas upišite vaše ime i adresu. Na primjer: Marko Marković,
-            Vukovarska 4, Zagreb.
+            Vukovarska 4, Mostar.
           </p>
           <div className="mt-2">
             <FormField
@@ -208,7 +207,7 @@ export function MemoryForm({
               HR12 3456 7890 1234 5678 9
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Primatelj: Osmrtnice d.o.o.
+              Primatelj: Osmrtnice Uskorplje .
             </p>
           </div>
         </section>

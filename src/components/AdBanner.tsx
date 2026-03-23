@@ -16,7 +16,7 @@ export default function AdBanner() {
           {/* CTA Button */}
           <a
             href="mailto:info@osmrtnice.ba"
-            className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900"
+            className="inline-flex items-center gap-2 rounded-lg btn-dark-color px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900"
           >
             <svg
               className="h-5 w-5"
@@ -35,9 +35,12 @@ export default function AdBanner() {
           </a>
 
           {/* Additional info */}
-          <p className="text-xs text-neutral-500 dark:text-neutral-500">
-            Telefon: +387 XX XXX XXX | Email: info@osmrtnice.ba
-          </p>
+          <a href="mailto:info@osmrtnice.ba" className="text-xs text-neutral-500 dark:text-neutral-500">
+             Email: info@osmrtnice.ba
+          </a>
+          <a href="tel:+38763040404" className="text-xs text-neutral-500 dark:text-neutral-500">
+             Telefon: +387 63 040 404
+          </a>
         </div>
       </div>
     </div>
