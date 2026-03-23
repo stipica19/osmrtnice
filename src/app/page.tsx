@@ -3,6 +3,8 @@ import { toCloudinaryAvif } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const obituaries = await prisma.obituary.findMany({
     select: {

@@ -130,7 +130,10 @@ export default function Page() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        ...values,
+        status: values.status ?? "published",
+      }),
     });
 
     if (!res.ok) {
