@@ -204,10 +204,10 @@ export function MemoryForm({
           <div className="mt-2 rounded-xl border bg-white p-4 dark:bg-neutral-900">
             <p className="text-sm">Molimo izvršiti uplatu na sljedeći IBAN:</p>
             <p className="mt-2 text-xl font-bold tracking-wide">
-              HR12 3456 7890 1234 5678 9
+              BA391414381320081434 
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Primatelj: Osmrtnice Uskorplje .
+              Primatelj: IGOR CRNOV, HUMAC BB, GORNJI VAKUF-USKOPLJE BOSNA I HERCEGOVINA
             </p>
           </div>
         </section>

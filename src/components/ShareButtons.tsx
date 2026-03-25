@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Facebook, Share2 } from "lucide-react";
 
@@ -9,20 +8,10 @@ type Props = {
 };
 
 export default function ShareButtons({ title }: Props) {
-  const url = useMemo(() => {
+  function getCurrentUrl() {
     if (typeof window === "undefined") return "";
     return window.location.href;
-  }, []);
-
-  const waText = title ? `${title}\n${url}` : url;
-
-  const fbShareUrl = url
-    ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
-    : "#";
-
-  const waShareUrl = url
-    ? `https://wa.me/?text=${encodeURIComponent(waText)}`
-    : "#";
+  }
 
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -30,7 +19,9 @@ export default function ShareButtons({ title }: Props) {
         type="button"
         variant="outline"
         onClick={() => {
+          const url = getCurrentUrl();
           if (!url) return;
+          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
           window.open(fbShareUrl, "_blank", "noopener,noreferrer");
         }}
       >
@@ -42,7 +33,10 @@ export default function ShareButtons({ title }: Props) {
         type="button"
         variant="outline"
         onClick={() => {
+          const url = getCurrentUrl();
           if (!url) return;
+          const waText = title ? `${title}\n${url}` : url;
+          const waShareUrl = `https://wa.me/?text=${encodeURIComponent(waText)}`;
           window.open(waShareUrl, "_blank", "noopener,noreferrer");
         }}
       >

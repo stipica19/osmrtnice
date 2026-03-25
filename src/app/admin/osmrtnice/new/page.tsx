@@ -160,14 +160,7 @@ export default function Page() {
             </h2>
             <p className="mt-1 text-sm text-amber-900 dark:text-amber-200">
               Pažljivo popunite obrazac sa svim potrebnim podacima. Pregled
-              osmrtnice će se prikazati u realnom vremenu na desnoj strani. Za
-              pomoć i pitanja nazovite
-              <a
-                href="tel:+38763063111"
-                className="ml-1 font-semibold underline"
-              >
-                063063111
-              </a>
+              osmrtnice će se prikazati u realnom vremenu na desnoj strani.
             </p>
           </div>
         </div>

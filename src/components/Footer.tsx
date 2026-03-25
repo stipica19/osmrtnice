@@ -68,7 +68,7 @@ export default function Footer() {
               Kontakt
             </h3>
             <ul className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-              <li> <a href="mailto:info@osmrtnice.ba" className="text-sm text-neutral-600 dark:text-neutral-400">Email: info@osmrtnice.ba</a></li>
+              <li> <a href="mailto:tiskarahumac@gmail.com" className="text-sm text-neutral-600 dark:text-neutral-400">Email: tiskarahumac@gmail.com</a></li>
               <li><a href="tel:+38763040404" className="text-sm text-neutral-600 dark:text-neutral-400">Telefon: +387 63 040 404</a></li>
              
             </ul>

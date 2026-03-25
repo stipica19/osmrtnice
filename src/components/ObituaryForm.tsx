@@ -116,7 +116,11 @@ export function ObituaryForm({
               <FormItem>
                 <FormLabel>Godina rođenja</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input
+                    type="text"
+                    placeholder="Npr. 1950 ili 31.10.1950"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -52,6 +52,11 @@ function toJsonContent(value: unknown): JSONContent | undefined {
   return typeof candidate.type === "string" ? candidate : undefined;
 }
 
+function formatDateForShare(date: Date | null | undefined): string {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString("hr-HR");
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const slug = await resolveSlug(params);
   if (!slug) {
@@ -79,20 +84,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const fullName = [o.firstName, o.lastName].filter(Boolean).join(" ");
-  const birthDate = o.birthDate
-    ? new Date(o.birthDate).toLocaleDateString("hr-HR")
-    : "";
-  const deathDate = o.deathDate
-    ? new Date(o.deathDate).toLocaleDateString("hr-HR")
-    : "";
+  const birthDate = formatDateForShare(o.birthDate ?? null);
+  const deathDate = formatDateForShare(o.deathDate ?? null);
+  const dateRange = birthDate && deathDate ? `${birthDate} - ${deathDate}` : "";
 
   const title = deathDate
     ? `${fullName} | Osmrtnica (${deathDate})`
     : `${fullName} | Osmrtnica`;
-  const shareTitle = fullName || "Osmrtnica";
+  const shareTitle = dateRange
+    ? `${fullName} (${dateRange})`
+    : fullName || "Osmrtnica";
 
-  const description = birthDate && deathDate
-    ? `${fullName} (${birthDate} - ${deathDate}). S tugom javljamo da je preminuo/la ${fullName}.`
+  const description = dateRange
+    ? `${fullName} (${dateRange})`
     : deathDate
       ? `${fullName} (${deathDate}). S tugom javljamo da je preminuo/la ${fullName}.`
       : `S tugom javljamo da je preminuo/la ${fullName}.`;
@@ -127,7 +131,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: shareTitle,
       description,
       images: [ogImage],
     },

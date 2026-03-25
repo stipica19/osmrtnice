@@ -4,6 +4,25 @@ import { requireAdmin } from "@/lib/admin";
 
 type Params = { params: Promise<{ id: string }> };
 
+function parseDateInput(value: unknown): Date | null {
+    if (!value) return null;
+    const raw = String(value).trim();
+    if (!raw) return null;
+
+    if (/^\d{4}$/.test(raw)) {
+        return new Date(`${raw}-01-01T00:00:00.000Z`);
+    }
+
+    const hr = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})\.?$/);
+    if (hr) {
+        const [, d, m, y] = hr;
+        return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}T00:00:00.000Z`);
+    }
+
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export async function GET(_req: Request, { params }: Params) {
     const { id } = await params;
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
@@ -53,8 +72,8 @@ export async function PUT(req: Request, { params }: Params) {
                 lastName: body.lastName,
                 djevojackoPrezime: body.djevojackoPrezime || null,
                 spol: body.spol ?? null,
-                birthDate: body.birthDate ? new Date(body.birthDate) : null,
-                deathDate: body.deathDate ? new Date(body.deathDate) : null,
+                birthDate: parseDateInput(body.birthDate),
+                deathDate: parseDateInput(body.deathDate),
                 slug: body.slug,
                 status: nextStatus,
                 publishedAt:

@@ -104,7 +104,7 @@ export function ObituaryPreviewClassic({
         <div className="grid h-full grid-cols-[32%_1fr]">
           <div className="h-full bg-neutral-900">
             <Image
-              src={templateLeftUrl}
+              src="/kriz.jpg"
               alt="motiv"
               width={400}
               height={1200}

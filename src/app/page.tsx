@@ -16,9 +16,7 @@ export default async function Home() {
       image: true,
       slug: true,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: [{ deathDate: "desc" }, { createdAt: "desc" }],
     where: {
       status: "published",
     },

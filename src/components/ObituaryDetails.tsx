@@ -77,6 +77,8 @@ export default function ObituaryDetails({
         ? `rođ. ${birthYear}.`
         : "";
 
+  const deathVerb = spol === "Z" ? "preminula" : spol === "M" ? "preminuo" : "preminuo/la";
+
   return (
     <div className="mx-auto max-w-200 bg-white px-6 py-10 font-serif text-neutral-900 print:max-w-none print:px-12 print:py-16">
       {/* PORTRET */}
@@ -87,7 +89,7 @@ export default function ObituaryDetails({
             alt="Portret"
             width={220}
             height={220}
-            className="h-58 w-58 rounded-md border object-cover"
+            className="h-full w-58 rounded-md border object-cover"
           />
         </div>
       )}
@@ -98,15 +100,17 @@ export default function ObituaryDetails({
       </h1>
 
       {/* GODINA / DATUM */}
-      <p className="mt-2 text-center text-lg text-neutral-600">
+      <p className="mt-2 text-center text-3xl text-neutral-800">
         {birthLine}
-        {dDate && (
+       
+      </p>
+      <p className="mt-2 text-center text-xl text-neutral-800">
+         {dDate && (
           <>
-            {birthLine && " "}• preminuo/la {dDate}
+            {birthLine && " "}{deathVerb} {dDate}
           </>
         )}
       </p>
-
       {/* RAZDJELNA LINIJA */}
       <div className="mx-auto my-6 h-px w-24 bg-neutral-300" />
 
@@ -122,7 +126,7 @@ export default function ObituaryDetails({
       {/* OŽALOŠĆENI */}
       {ozalosceni && (
         <div className="mt-8">
-          <h2 className="mb-2 text-center text-lg font-semibold tracking-widest uppercase text-neutral-600">
+          <h2 className="mb-2 text-center text-lg font-semibold tracking-widest uppercase text-neutral-800">
             Ožalošćeni
           </h2>
 
