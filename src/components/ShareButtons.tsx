@@ -22,24 +22,45 @@ export default function ShareButtons({ title }: Props) {
     const url = getCurrentUrl();
     if (!url) return;
 
-    // On mobile, native share sheet is more reliable than FB app deep-link routing.
-    if (isMobileDevice() && typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({
-          title: title || "Osmrtnice",
-          text: title || "Pogledaj objavu",
-          url,
-        });
-        return;
-      } catch {
-        // User cancelled or sharing failed; continue with web fallback below.
-      }
-    }
-
     const quote = title ? `&quote=${encodeURIComponent(title)}` : "";
     const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}${quote}`;
 
     if (isMobileDevice()) {
+      const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+      const isAndroid = /Android/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+      if (isAndroid) {
+        const intentUrl = `intent://facewebmodal/f?href=${encodeURIComponent(fbShareUrl)}#Intent;scheme=fb;package=com.facebook.katana;end`;
+        window.location.href = intentUrl;
+        setTimeout(() => {
+          window.location.href = fbShareUrl;
+        }, 900);
+        return;
+      }
+
+      if (isIOS) {
+        const iosDeepLink = `fb://facewebmodal/f?href=${encodeURIComponent(fbShareUrl)}`;
+        window.location.href = iosDeepLink;
+        setTimeout(() => {
+          window.location.href = fbShareUrl;
+        }, 900);
+        return;
+      }
+
+      if (typeof navigator !== "undefined" && navigator.share) {
+        try {
+          await navigator.share({
+            title: title || "Osmrtnice",
+            text: title || "Pogledaj objavu",
+            url,
+          });
+          return;
+        } catch {
+          // User cancelled or sharing failed; continue with fallback below.
+        }
+      }
+
       window.location.href = fbShareUrl;
       return;
     }
