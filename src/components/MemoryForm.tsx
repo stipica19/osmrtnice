@@ -202,6 +202,7 @@ export function MemoryForm({
         <section className="mb-4">
           <h2 className="text-lg font-semibold">PODACI ZA UPLATU</h2>
           <div className="mt-2 rounded-xl border bg-white p-4 dark:bg-neutral-900">
+            <p className="text-sm font-semibold">Cijena objave: 10 KM</p>
             <p className="text-sm">Molimo izvršiti uplatu na sljedeći IBAN:</p>
             <p className="mt-2 text-xl font-bold tracking-wide">
               BA391414381320081434 

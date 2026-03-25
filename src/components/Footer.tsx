@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+const FACEBOOK_PAGE_URL =
+  process.env.NEXT_PUBLIC_FACEBOOK_PAGE_URL || "https://www.facebook.com/";
+
 export default function Footer() {
   return (
     <footer className="mt-auto w-full border-t bg-neutral-50 dark:bg-neutral-950">
@@ -70,6 +73,16 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
               <li> <a href="mailto:tiskarahumac@gmail.com" className="text-sm text-neutral-600 dark:text-neutral-400">Email: tiskarahumac@gmail.com</a></li>
               <li><a href="tel:+38763040404" className="text-sm text-neutral-600 dark:text-neutral-400">Telefon: +387 63 040 404</a></li>
+              <li>
+                <a
+                  href={FACEBOOK_PAGE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition hover:text-amber-600 dark:hover:text-amber-400"
+                >
+                  Facebook stranica Osmrtnice
+                </a>
+              </li>
              
             </ul>
           </div>

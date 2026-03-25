@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {signOut} from "next-auth/react";
 import Image from "next/image";
+import { Facebook } from "lucide-react";
 import styles from "./Navbar.module.css";
+
+const FACEBOOK_PAGE_URL =
+  process.env.NEXT_PUBLIC_FACEBOOK_PAGE_URL || "https://www.facebook.com/OsmtrniceUskoplje";
 
 const baseNavItems = [
   { href: "/", label: "Osmrtnice" },
@@ -47,11 +51,27 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-3 py-2 text-md font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+              className={
+                item.href === "/sjecanja/new"
+                  ? styles.submitMemoryDesktop
+                  : "rounded-md px-3 py-2 text-md font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+              }
             >
               {item.label}
             </Link>
           ))}
+          <a
+            href={FACEBOOK_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook stranica"
+            className={styles.fbLinkDesktop}
+          >
+            <span className={styles.fbIconBox}>
+              <Facebook className="h-4 w-4" />
+            </span>
+            <span className="sr-only">Facebook</span>
+          </a>
           {status === "authenticated" && (
             <button
               type="button"
@@ -110,11 +130,27 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block rounded-md px-3 py-2.5 text-base font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+                className={
+                  item.href === "/sjecanja/new"
+                    ? styles.submitMemoryMobile
+                    : "block rounded-md px-3 py-2.5 text-lg font-medium text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+                }
               >
                 {item.label}
               </Link>
             ))}
+            <a
+              href={FACEBOOK_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook stranica"
+              className={styles.fbLinkMobile}
+            >
+              <span className={styles.fbIconBox}>
+                <Facebook className="h-4 w-4" />
+              </span>
+              <span className="sr-only">Facebook</span>
+            </a>
           </div>
         </nav>
       </div>

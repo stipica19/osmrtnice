@@ -41,7 +41,7 @@ export default function ONamaPage() {
         </p>
 
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-neutral-800 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-neutral-200">
-          Kontakt: info@osmrtnice.ba
+          Kontakt: tiskarahumac@gmail.com
         </div>
 
         <div className="pt-2">

@@ -73,7 +73,7 @@ export default function UsloviKoristenjaPage() {
           </h2>
           <p className="mt-2">
             Za pitanja vezana za uslove koristenja mozete nas kontaktirati na
-            email adresu info@osmrtnice.ba.
+            email adresu tiskarahumac@gmail.com
           </p>
         </section>
       </div>

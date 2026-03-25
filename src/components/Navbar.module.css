@@ -21,6 +21,101 @@
   object-position: left center;
 }
 
+.submitMemoryDesktop {
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #254763;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submitMemoryDesktop:hover {
+  background: #1f3a50;
+}
+
+.submitMemoryMobile {
+  display: block;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #254763;
+  transition: background-color 0.2s ease;
+}
+
+.submitMemoryMobile:hover {
+  background: #1f3a50;
+}
+
+.fbLinkDesktop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.fbLinkDesktop:hover {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.fbLinkMobile {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  margin-left: 12px;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.fbLinkMobile:hover {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.fbIconBox {
+  display: inline-flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  background: #ffffff;
+}
+
+:global(.dark) .fbLinkDesktop,
+:global(.dark) .fbLinkMobile {
+  border-color: #1e3a8a;
+  background: rgba(30, 58, 138, 0.2);
+  color: #93c5fd;
+}
+
+:global(.dark) .fbLinkDesktop:hover,
+:global(.dark) .fbLinkMobile:hover {
+  border-color: #2563eb;
+  background: rgba(30, 64, 175, 0.32);
+  color: #bfdbfe;
+}
+
+:global(.dark) .fbIconBox {
+  background: rgba(17, 24, 39, 0.85);
+}
+
 @media (min-width: 640px) {
   .logoFrame {
     width: 96px;
