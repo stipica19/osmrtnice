@@ -18,26 +18,42 @@ export default function ShareButtons({ title }: Props) {
     return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   }
 
+  async function shareOnFacebook() {
+    const url = getCurrentUrl();
+    if (!url) return;
+
+    // On mobile, native share sheet is more reliable than FB app deep-link routing.
+    if (isMobileDevice() && typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: title || "Osmrtnice",
+          text: title || "Pogledaj objavu",
+          url,
+        });
+        return;
+      } catch {
+        // User cancelled or sharing failed; continue with web fallback below.
+      }
+    }
+
+    const quote = title ? `&quote=${encodeURIComponent(title)}` : "";
+    const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}${quote}`;
+
+    if (isMobileDevice()) {
+      window.location.href = fbShareUrl;
+      return;
+    }
+
+    window.open(fbShareUrl, "_blank", "noopener,noreferrer");
+  }
+
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
       <Button
         type="button"
         variant="outline"
         onClick={() => {
-          const url = getCurrentUrl();
-          if (!url) return;
-          const quote = title ? `&quote=${encodeURIComponent(title)}` : "";
-          const base = isMobileDevice()
-            ? "https://m.facebook.com/sharer/sharer.php"
-            : "https://www.facebook.com/sharer/sharer.php";
-          const fbShareUrl = `${base}?u=${encodeURIComponent(url)}${quote}`;
-
-          if (isMobileDevice()) {
-            window.location.href = fbShareUrl;
-            return;
-          }
-
-          window.open(fbShareUrl, "_blank", "noopener,noreferrer");
+          void shareOnFacebook();
         }}
       >
         <Facebook className="mr-2 h-4 w-4" />
