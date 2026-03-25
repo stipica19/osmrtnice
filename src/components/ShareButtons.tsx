@@ -13,6 +13,11 @@ export default function ShareButtons({ title }: Props) {
     return window.location.href;
   }
 
+  function isMobileDevice() {
+    if (typeof navigator === "undefined") return false;
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  }
+
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
       <Button
@@ -21,7 +26,17 @@ export default function ShareButtons({ title }: Props) {
         onClick={() => {
           const url = getCurrentUrl();
           if (!url) return;
-          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+          const quote = title ? `&quote=${encodeURIComponent(title)}` : "";
+          const base = isMobileDevice()
+            ? "https://m.facebook.com/sharer/sharer.php"
+            : "https://www.facebook.com/sharer/sharer.php";
+          const fbShareUrl = `${base}?u=${encodeURIComponent(url)}${quote}`;
+
+          if (isMobileDevice()) {
+            window.location.href = fbShareUrl;
+            return;
+          }
+
           window.open(fbShareUrl, "_blank", "noopener,noreferrer");
         }}
       >
